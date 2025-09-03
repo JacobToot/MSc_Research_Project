@@ -1,5 +1,20 @@
 def quasi_crystal_1d(lattice_spacing = 1, alpha_deg = 45, number_of_points = 100, width = 1):
+    """Generates a 1D quasi-crystal by projecting points from a 2D lattice onto a line at an angle alpha to the x-axis.
+    
+    Imports: 
+        numpy as np.
 
+    Args:
+        lattice_spacing (float, optional): spacing between points in the 2D lattice. Defaults to 1.
+        alpha_deg (float, optional): angle in degrees between the projection line and the x-axis. Defaults to 45.
+        number_of_points (int, optional): number of points to generate in the quasi-crystal. Defaults to 100.
+        width (float, optional): width of the strip in the 2D lattice from which points are projected. Defaults to 1.
+    
+    Returns:
+        quasi_crystal (np.ndarray): array of distances of projected points from the origin.
+        points (np.ndarray): array of original 2D lattice points within the strip.
+        proj_points (np.ndarray): array of projected 2D points onto the line."""
+    
     slope = np.tan(alpha_deg * np.pi / 180) # compute slope of line from angle
     y_intercept = np.cos(alpha_deg * np.pi / 180) * width # y-intercept of line
 
