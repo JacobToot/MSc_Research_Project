@@ -1,9 +1,9 @@
-def generate_irrational(upper_limit = 45, max_value_integer = 10 ** 5):
+import random
+import math
+
+def generate_irrational(upper_limit = 10, max_value_integer = 10 ** 5):
     """Generates a random irrational number with upper_limit. 
     
-    Imports: 
-        package: random, math
-
     Args:
         upper_limit (float, optional): upper limit for irrational. Defaults to 45.
         max_value_integer (int, optional): maximum value of integer to be square rooted. Defaults to 10**5. 

@@ -1,60 +1,46 @@
-def quasi_crystal_1d(lattice_spacing = 1, alpha_deg = 45, number_of_points = 100, width = 1):
-    """Generates a 1D quasi-crystal by projecting points from a 2D lattice onto a line at an angle alpha to the x-axis.
-    
-    Imports: 
-        numpy as np.
+import numpy as np
 
-    Args:
-        lattice_spacing (float, optional): spacing between points in the 2D lattice. Defaults to 1.
-        alpha_deg (float, optional): angle in degrees between the projection line and the x-axis. Defaults to 45.
-        number_of_points (int, optional): number of points to generate in the quasi-crystal. Defaults to 100.
-        width (float, optional): width of the strip in the 2D lattice from which points are projected. Defaults to 1.
-    
-    Returns:
-        quasi_crystal (np.ndarray): array of distances of projected points from the origin.
-        points (np.ndarray): array of original 2D lattice points within the strip.
-        proj_points (np.ndarray): array of projected 2D points onto the line."""
-    
-    slope = np.tan(alpha_deg * np.pi / 180) # compute slope of line from angle
-    y_intercept = np.cos(alpha_deg * np.pi / 180) * width # y-intercept of line
+def quasi_crystal_1d(lattice_spacing = 1, slope = np.sqrt(2), acceptance_window = 10, number_of_points = 100):
 
-    points = [] # initialising list of points
+  """Function to compute a sequence of points that correspond to a 1D quasi crystal. Using cut-and-project method.
 
-    min_i = - int(np.ceil(width / lattice_spacing)) # minimum value of i to prevent missing points that project from x<0 to x=>0 from final sequence
-    max_i = 3 * number_of_points # maximum value of i to ensure enough points (arbitrary limit, may change later)
+  Args:
 
-    for i in range (min_i, max_i): 
+    lattice_spacing(float, optional): Spacing between points. Defaults to 1.
+    slope(float, optional): Slope of line that 2D crystal points are projected onto. Must be an irrational number. Defaults to np.sqrt(2).
+    acceptance_window(float, optional): Defines the maximum perpendicular direction from the line that points are projected onto. Defaults to 10.
+    number_of_points(int): Number of points to generate. Defaults to 100.
 
-        lower_limit = i * lattice_spacing * slope
-        upper_limit = lower_limit + y_intercept
-        
-        for j in range (10 * number_of_points):
+  Returns:
+    distances: a sorted np.ndarray object that stores a list of sorted distances of quasi crystal points. Distance is radial from point i to point i + 1.
+    points: a 2D np.ndarray object that stores the coordinates of the quasi crystal points in the original coordinate system.
+      
+  """
 
-            if lower_limit < j * lattice_spacing < upper_limit: # check if point is in strip
-                points.append([i * lattice_spacing, j * lattice_spacing]) 
-            
-            elif upper_limit < j * lattice_spacing:
-                break # break inner loop if point is above strip
+  upper_limit = 5 * number_of_points / (lattice_spacing * acceptance_window)
+  coords = np.arange(-acceptance_window, upper_limit + lattice_spacing, lattice_spacing)
+  X, Y = np.meshgrid(coords, coords, indexing='ij')
 
-    points = np.array(points) 
-    quasi_crystal = []
-    proj_points = []
+  # perpendicular projection and masking X, Y grid to find all lattice points that need to be projected
+  s = np.abs(-slope * Y + X/np.sqrt(1 + slope ** 2))
+  mask = s <= acceptance_window / 2
+  X_masked = X[mask]
+  Y_masked = Y[mask]
 
-    for i in range(len(points)):
+  # project all points onto y = slope * x
+  proj_x = (X_masked + slope * Y_masked) / (1 + slope**2)
+  proj_y = slope * proj_x
 
-        x = points[i,0]  
-        y = points[i,1]
+  # keep only positive x
+  valid = proj_x >= 0
+  proj_x = proj_x[valid]
+  proj_y = proj_y[valid]
+  
+  # final touch up of data
+  points = np.vstack((proj_x, proj_y)).T
+  distances = np.sqrt(proj_x ** 2 + proj_y ** 2)
+  distances = np.sort(distances)
+  distances = np.diff(distances)
+  distances = distances[:number_of_points]
 
-        proj_x = (slope * y + x) / (slope ** 2 + 1) # project x coordinate of point onto line y = slope * x
-        
-        if proj_x <0:
-            continue # only store values proj_x=>0
-        else: 
-            proj_y = proj_x * slope
-            proj_points.append([proj_x, proj_y])
-            quasi_crystal.append(np.sqrt(proj_x ** 2 + proj_y ** 2))
-    
-    proj_points = np.array(proj_points)
-    quasi_crystal = np.array(quasi_crystal) 
-    
-    return quasi_crystal, points, proj_points
+  return distances, slope, points
