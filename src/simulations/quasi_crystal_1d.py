@@ -22,7 +22,8 @@ def quasi_crystal_1d(lattice_spacing = 1, slope = np.sqrt(2), acceptance_window 
   X, Y = np.meshgrid(coords, coords, indexing='ij')
 
   # perpendicular projection and masking X, Y grid to find all lattice points that need to be projected
-  s = np.abs(-slope * Y + X/np.sqrt(1 + slope ** 2))
+  s = np.abs(slope * X + Y) / np.sqrt(1 + slope ** 2)
+
   mask = s <= acceptance_window / 2
   X_masked = X[mask]
   Y_masked = Y[mask]

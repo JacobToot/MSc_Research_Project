@@ -30,7 +30,7 @@ from simulations.quasi_crystal_1d import quasi_crystal_1d
 from simulations.random_step_1d import random_step_1d
 from simulations.gaussian_step_1d import gaussian_step_1d
 
-dataset = DistanceDataset(n_samples=300, seq_len=100)
+dataset = DistanceDataset(n_samples=90, seq_len=100)
 
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
