@@ -9,9 +9,9 @@ import sys
 repo_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 sys.path.append(os.path.join(repo_root, "src"))
 
-class Conv1DClassifier(nn.Module): # initialise the model class conv1dclassifier
+class Conv1DClassifier(nn.Module): 
 
-    def __init__(self, seq_len=100):
+    def __init__(self, seq_len=100, classes=3):
         super().__init__()
         
         self.conv_layers = nn.Sequential(
@@ -26,7 +26,7 @@ class Conv1DClassifier(nn.Module): # initialise the model class conv1dclassifier
             nn.Flatten(),
             nn.Linear(32 * seq_len, 64),
             nn.ReLU(),
-            nn.Linear(64, 3)
+            nn.Linear(64, classes)
         )
 
     def forward(self, x):

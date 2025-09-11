@@ -19,12 +19,12 @@ from utils.generate_irrational import generate_irrational
 
 # Parameters
 
-quasi_crystal, slope, _ = quasi_crystal_1d(lattice_spacing = 1, slope = np.sqrt(15), acceptance_window = 40, number_of_points = 100000)
+quasi_crystal, slope, _ = quasi_crystal_1d(lattice_spacing = 1, slope = np.sqrt(13), acceptance_window = 40, number_of_points = 100000)
 random_step = random_step_1d(step_size = 1, positive_probability = 0.5, number_of_points = 10000)
 gaussian_step = gaussian_step_1d(step_size = 1, std_dev = 0.1, number_of_points = 10000)
 
 # Generating histograms
-histogram(quasi_crystal, title = f"1D Quasi Crystal Histogram, slope = {slope}", lattice_spacing = 1, bins = 200, log = False)
+histogram(quasi_crystal, title = f"1D Quasi Crystal Histogram, slope = {slope}", lattice_spacing = 1, bins = 200, log = True)
 plt.savefig(os.path.join(results_path, "quasi_crystal_histogram3.png"))
 plt.clf()
 

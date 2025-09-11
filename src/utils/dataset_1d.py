@@ -15,11 +15,8 @@ class DistanceDataset(Dataset):
         self.n_samples = n_samples
         self.seq_len = seq_len
 
-        # number of samples per class
-        n_per_class = n_samples // 3
-
         # balanced labels
-        labels = [0]*n_per_class + [1]*n_per_class + [2]*n_per_class
+        labels = [0] * 0.9 * n_samples + [1] * 0.05 * n_samples + [2] * 0.05 * n_samples
         self.labels = np.array(labels)
         np.random.shuffle(self.labels)  
 
@@ -37,9 +34,9 @@ class DistanceDataset(Dataset):
 
         # Quasi-Crystal 
         if label == 0:  
-            acceptance_window = np.random.randint(5, 20)
+            acceptance_window = np.random.randint(10, 50)
             seq = generator(lattice_spacing = 1, slope = generate_irrational(upper_limit = 2), acceptance_window = acceptance_window, number_of_points = self.seq_len)[0]
-        
+
         # Random Step
         elif label == 1:  
             step_size = np.random.uniform(0.1, 1.5)
@@ -54,5 +51,6 @@ class DistanceDataset(Dataset):
 
         x = torch.tensor(seq, dtype=torch.float32).unsqueeze(0)
         y = torch.tensor(label, dtype=torch.long)
+
         return x, y
 
