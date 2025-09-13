@@ -33,10 +33,11 @@ from utils.permutation import permutation_1d
 from utils.generate_irrational import generate_irrational
 
 dataset = DataSet1D()
-dataset = dataset.quasi_crystal(number_of_sequences=20, lattice_spacing=1, slope=lambda: generate_irrational(upper_limit=10), acceptance_window=lambda: np.random.randint(2,20), number_of_points=50)
-dataset = dataset.permutation(number_of_pairs=25)
-dataset = dataset.random_step(number_of_sequences=20, step_size=lambda: np.random.uniform(0.1, 0.4), positive_probability=lambda: np.random.uniform(0.3, 0.6), number_of_points=50)
-dataset = dataset.gaussian(number_of_sequences=20, step_size=1, std_dev=lambda: np.random.uniform(0.1, 0.3), number_of_points=50)
+seq_len = 2500
+dataset = dataset.quasi_crystal(number_of_sequences=3000, lattice_spacing=1, slope=lambda: generate_irrational(upper_limit=10), acceptance_window=lambda: np.random.randint(2,20), number_of_points=seq_len)
+print(1)
+dataset = dataset.permutation(number_of_pairs=int(0.4 * seq_len), permute_label=1)
+print(2)
 
 train_size = int(0.8 * len(dataset))
 val_size = len(dataset) - train_size
@@ -46,10 +47,17 @@ val_loader = DataLoader(val_dataset, batch_size=16, shuffle=False)
 
 num_classes = len(set(dataset.labels))
 
-model = Conv1DClassifier(seq_len=50, classes = num_classes)
+model = Conv1DClassifier(seq_len=seq_len, classes = num_classes)
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.Adam(model.parameters(), lr=0.001)
-num_epochs = 10
+num_epochs = 100
+
+# model = Conv1DClassifier(seq_len=seq_len, classes = num_classes+1)
+# weights = torch.ones(num_classes + 1) 
+# weights[num_classes] = 0.5
+# criterion = nn.CrossEntropyLoss(weight=weights)
+# optimizer = optim.Adam(model.parameters(), lr=0.001)
+# num_epochs = 100
 
 for epoch in range(num_epochs):
     model.train()

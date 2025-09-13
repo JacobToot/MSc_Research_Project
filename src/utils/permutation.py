@@ -12,16 +12,17 @@ def permutation_1d(sequence, number_of_pairs=100):
     """
 
     n = len(sequence)
+    copy = sequence.copy()
     vals = np.random.choice(n, size=(number_of_pairs, 2), replace=False)
 
     for k in range(number_of_pairs):
         i, j = vals[k]
 
         attempts = 0
-        while sequence[i] == sequence[j] and attempts < n:
+        while copy[i] == copy[j] and attempts < n:
             attempts += 1
             j = (j + 1) % (n-1)
         
-        sequence[i], sequence[j] = sequence[j], sequence[i]
+        copy[i], copy[j] = copy[j], copy[i]
 
-    return sequence
+    return copy

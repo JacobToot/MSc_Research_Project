@@ -47,6 +47,7 @@ class DataSet1D():
       avg = np.mean(sequence)
       self.data.append((1 / avg) * sequence)
       self.labels.append(self.next_label)
+      print(f"Generated quasi crystal sequence {i+1}/{number_of_sequences}")
     
     self.next_label += 1
 
